@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Vilo</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div id="boardListView">
+        <h1>My Boards</h1>
+        <button onclick="createBoard()">+ Create Board</button>
+        <div id="boardsContainer"></div>
+      </div>
+
+      <!--inside board-->
+      <div id="boardView" class="hidden">
+        <button onclick="goBack()">← Back to Boards</button>
+        <h2 id="boardTitle"></h2>
+        <div id="sectionsContainer"></div>
+        <button onclick="addSection()">+ Add Section</button>
+      </div>
+    </div>
+
+    <!--create new-->
+    <div id="promptOverlay" class="hidden">
+      <div class="promptBox">
+        <h3>Enter name</h3>
+        <input type="text" id="promptInput" />
+        <div class="promptButtons">
+          <button onclick="submitPrompt()">OK</button>
+          <button onclick="closePrompt()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!--tasks-->
+    <div id="taskOverlay" class="hidden">
+        <div class="taskBox">
+            <input id="taskTitle" type="text" placeholder="Task title..." />
+            <textarea id="taskDescription" placeholder="Task description..."></textarea>
+
+            <div id="checklist"></div>
+            <div id="checklistItems" class="checklist"></div>
+            <button onclick="addChecklistItem()">+ Add Checklist Item</button>
+
+            <div class="taskButtons">
+            <button onclick="saveTaskChanges()">Save</button>
+            <button onclick="closeTaskOverlay()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

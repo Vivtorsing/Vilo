@@ -1,0 +1,336 @@
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: #1f2937;
+  color: #f9fafb;
+  padding: 1rem;
+  line-height: 1.5;
+}
+
+button {
+  background: #f472b6;
+  border: none;
+  padding: 0.5rem 1rem;
+  color: white;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 2px 6px #f472b633;
+}
+
+button:hover {
+  background: #ec4899;
+  transform: translateY(-1px);
+}
+
+.board {
+  background: #374151;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0.75rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.board:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px #00000044;
+}
+
+#promptOverlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.promptBox {
+    background: #111827;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    width: 300px;
+    text-align: center;
+    color: white;
+}
+
+.promptBox input {
+    width: 90%;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+    background: #1f2937;
+    border: 1px solid #4b5563;
+    color: white;
+}
+
+.promptButtons {
+    margin-top: 1rem;
+}
+
+.promptButtons button {
+    margin: 0 0.5rem;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.deleteBtn {
+  background: #f87171;
+  margin-left: 0.5rem;
+}
+
+.deleteBtn:hover {
+  background: #ef4444;
+}
+
+#sectionsContainer {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+.section {
+  background: #334155;
+  padding: 1rem;
+  border-radius: 1rem;
+  min-width: 220px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px #00000033;
+  transition: background 0.2s ease;
+}
+
+.section:hover {
+  background: #3b4758;
+}
+
+.sectionTitle {
+  width: 90%;
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: #1e293b;
+  border: 1px solid #475569;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.task {
+  background: #475569;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s ease;
+}
+
+.task:hover {
+  background: #546177;
+}
+
+.deleteTaskBtn {
+  background: transparent;
+  border: none;
+  color: #ff4d6d;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0.6;
+  margin-left: 8px;
+}
+
+.deleteTaskBtn:hover {
+  opacity: 1;
+}
+
+#taskOverlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.taskBox {
+  background: #1e293b;
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  color: white;
+  box-shadow: 0 4px 20px #00000066;
+}
+
+.taskBox textarea {
+  width: 100%;
+  height: 80px;
+  margin-top: 0.5rem;
+  background: #1f2937;
+  border: 1px solid #4b5563;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  color: white;
+}
+
+.taskButtons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.checklistItem {
+  background: #475569;
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.2s ease;
+  box-shadow: 0 1px 3px #00000033;
+}
+
+.checklistItem:hover {
+  background: #5b6b82;
+}
+
+#checklistItems {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.checklistItem.dragging {
+  opacity: 0.5;
+  background: #64748b;
+}
+
+.checklistItem input[type="text"] {
+  flex: 1;
+  background: #1f2937;
+  border: 1px solid #4b5563;
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  color: white;
+}
+
+.checklistItem input[type="checkbox"] {
+  appearance: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 2px solid #f472b6;
+  border-radius: 0.25rem;
+  margin-right: 0.5rem;
+  background: #1f2937;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s ease;
+}
+
+.checklistItem input[type="checkbox"]:checked {
+  background-color: #f472b6;
+  border-color: #f472b6;
+}
+
+.checklistItem input[type="checkbox"]:checked::after {
+  content: '✔';
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  font-size: 0.8rem;
+  color: white;
+}
+
+.checklistItem input[type="checkbox"]:hover {
+  box-shadow: 0 0 0 2px #f472b677;
+}
+
+.checklistItem span {
+  flex: 1;
+}
+
+.checklistItem button {
+  background: #f87171;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}
+
+.tasks {
+  min-height: 50px;
+}
+
+#taskTitle {
+  width: 100%;
+  font-size: 1.25rem;
+  font-weight: bold;
+  background: #1f2937;
+  border: 1px solid #4b5563;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.deleteBtn {
+  background: #f87171;
+  margin-top: 0.5rem;
+}
+.deleteBtn:hover {
+  background: #ef4444;
+}
+
+.progressBar {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.progressTrack {
+  background: #334155;
+  border-radius: 1rem;
+  height: 0.5rem;
+  width: 100%;
+  overflow: hidden;
+}
+
+.progressFill {
+  background: linear-gradient(to right, #f472b6, #fb7185);
+  height: 100%;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+.progressText {
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  text-align: right;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+.dragging-task {
+  opacity: 0.4;
+  transform: scale(0.98);
+}
+
+.dragging-section {
+  opacity: 0.4;
+  transform: scale(0.98);
+}
