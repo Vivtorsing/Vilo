@@ -1,5 +1,9 @@
 # 🌸 Vilo – A Cute & Simple Trello-style Task Manager
 
+<p align="center">
+    <img src="icons/Vilo_Icon@2x.png" alt="App Icon" width="128" align="center"/>
+</p>
+
 Vilo is a simple desktop app that I created just to learn Electron and definitely not because I was too lazy to sign back into to Trello... Anyways a simple place to keep track of your tasks and progress offline! 
 
 Still more stuff todo like small bug fixes and visual improvements but I want to show it off a bit. I wonder what I should add next???
