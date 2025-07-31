@@ -45,19 +45,62 @@ function createBoard() {
   });
 }
 
+let draggedBoardIndex = null;
+let currentHoverIndex = null;
+
 function renderBoards() {
-    const container = document.getElementById('boardsContainer');
-    container.innerHTML = '';
-    boards.forEach(board => {
-        const div = document.createElement('div');
-        div.className = 'board';
-        div.innerHTML = `
-          <h2>${board.name}</h2>
-          <button onclick="openBoard(${board.id})">Open</button>
-          <button onclick="deleteBoard(${board.id})" class="deleteBtn">Delete</button>
-        `;
-        container.appendChild(div);
-    })
+  const container = document.getElementById('boardsContainer');
+  container.innerHTML = '';
+
+  boards.forEach((board, index) => {
+    const div = document.createElement('div');
+    div.className = 'board';
+    div.draggable = true;
+    div.dataset.index = index;
+
+    div.innerHTML = `
+      <h2>${board.name}</h2>
+      <button onclick="openBoard(${board.id})">Open</button>
+      <button onclick="deleteBoard(${board.id})" class="deleteBtn">Delete</button>
+    `;
+
+    //drag stuff
+    div.addEventListener('dragstart', () => {
+      draggedBoardIndex = index;
+      div.classList.add('dragging-board');
+    });
+
+    div.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      const overIndex = Number(div.dataset.index);
+      if (overIndex !== draggedBoardIndex) {
+        currentHoverIndex = overIndex;
+      }
+    });
+
+    div.addEventListener('dragend', () => {
+      div.classList.remove('dragging-board');
+    });
+
+    container.appendChild(div);
+  });
+
+  //drop
+  container.addEventListener('drop', () => {
+    if(
+      draggedBoardIndex !== null &&
+      currentHoverIndex !== null &&
+      draggedBoardIndex !== currentHoverIndex
+    ) {
+      const dragged = boards.splice(draggedBoardIndex, 1)[0];
+      boards.splice(currentHoverIndex, 0, dragged);
+      saveBoards();
+      renderBoards();
+    }
+
+    draggedBoardIndex = null;
+    currentHoverIndex = null;
+  });
 }
 
 function openBoard(id) {
@@ -164,19 +207,21 @@ function renderSections() {
 
       //progress bar
       const total = task.checklist?.length || 0;
-      const done = task.checklist?.filter(i => i.checked).length || 0;
-      const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+      if(total != 0) {
+        const done = task.checklist?.filter(i => i.checked).length || 0;
+        const percent = total > 0 ? Math.round((done / total) * 100) : 0;
 
-      const progressBar = document.createElement('div');
-      progressBar.className = 'progressBar';
-      progressBar.innerHTML = `
-        <div class="progressTrack">
-          <div class="progressFill" style="width: ${percent}%;"></div>
-        </div>
-        <span class="progressText">${percent}%</span>
-      `;
+        const progressBar = document.createElement('div');
+        progressBar.className = 'progressBar';
+        progressBar.innerHTML = `
+          <div class="progressTrack">
+            <div class="progressFill" style="width: ${percent}%;"></div>
+          </div>
+          <span class="progressText">${percent}%</span>
+        `;
 
-      taskEl.appendChild(progressBar);
+        taskEl.appendChild(progressBar);
+      }
 
       //delete button
       const deleteBtn = document.createElement('button');
@@ -341,18 +386,24 @@ function renderChecklist(task) {
 
   //progress bar
   const total = task.length;
-  const done = task.filter(i => i.checked).length;
-  const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+  //check if tasks then show progress bar
+  if(total != 0) {
+    const done = task.filter(i => i.checked).length;
+    const percent = total > 0 ? Math.round((done / total) * 100) : 0;
 
-  const checklistContainer = document.getElementById('checklist');
-  checklistContainer.innerHTML = `
-    <div class="progressBar">
-      <div class="progressTrack">
-        <div class="progressFill" style="width: ${percent}%;"></div>
+    const checklistContainer = document.getElementById('checklist');
+    checklistContainer.innerHTML = `
+      <div class="progressBar">
+        <div class="progressTrack">
+          <div class="progressFill" style="width: ${percent}%;"></div>
+        </div>
+        <span class="progressText">${percent}%</span>
       </div>
-      <span class="progressText">${percent}%</span>
-    </div>
-  `;
+    `;
+  } else {
+    const checklistContainer = document.getElementById('checklist');
+    checklistContainer.innerHTML = ``;
+  }
 
   container.innerHTML = '';
 
@@ -408,6 +459,16 @@ document.getElementById('taskOverlay').addEventListener('mousedown', (e) => {
     }, 100);
   }
 });
+
+//allow enter press to create new board
+const promptInput = document.getElementById("promptInput");
+promptInput.addEventListener("keyup", function(event) {
+  //check if there is a name as well
+  const value = document.getElementById('promptInput').value;
+  if(event.key == "Enter" && value.length != 0) {
+    submitPrompt()
+  }
+})
 
 
 function addChecklistItem() {
