@@ -22,6 +22,9 @@ function showPrompt(callback) {
   promptCallback = callback;
   document.getElementById('promptInput').value = '';
   document.getElementById('promptOverlay').classList.remove('hidden');
+
+  //put cursor inside input
+  document.getElementById('promptInput').focus();
 }
 
 function submitPrompt() {
@@ -359,6 +362,14 @@ function addTask(sectionId) {
       section.tasks.push(task);
       saveBoards();
       renderSections();
+
+      //scroll to bottom
+      const sectionEl = document.querySelector(
+        `.section .tasks[data-section-id="${sectionId}"]`
+      );
+      if(sectionEl) {
+        sectionEl.scrollTop = sectionEl.scrollHeight;
+      }
     }
   });
 }
@@ -386,10 +397,10 @@ function renderChecklist(task) {
 
   //progress bar
   const total = task.length;
-  //check if tasks then show progress bar
-  if(total != 0) {
+  if(total !== 0) {
+    //add progress bar
     const done = task.filter(i => i.checked).length;
-    const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+    const percent = Math.round((done / total) * 100);
 
     const checklistContainer = document.getElementById('checklist');
     checklistContainer.innerHTML = `
@@ -401,12 +412,13 @@ function renderChecklist(task) {
       </div>
     `;
   } else {
-    const checklistContainer = document.getElementById('checklist');
-    checklistContainer.innerHTML = ``;
+    //dont add progress bar
+    document.getElementById('checklist').innerHTML = ``;
   }
 
   container.innerHTML = '';
 
+  //add each task
   task.forEach((item, index) => {
     const div = document.createElement('div');
     div.className = 'checklistItem';
@@ -415,11 +427,26 @@ function renderChecklist(task) {
 
     div.innerHTML = `
       <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleChecklistItem(${index})" />
-      <input type="text" value="${item.text}" onchange="editChecklistItem(${index}, this.value)" />
+      <input type="text" value="${item.text}" />
       <button onclick="removeChecklistItem(${index})">🗑</button>
     `;
 
-    div.addEventListener('dragstart', (e) => {
+    //handle typing in text box
+    const textInput = div.querySelector('input[type="text"]');
+    textInput.addEventListener('input', (e) => {
+      editChecklistItem(index, e.target.value);
+    });
+
+    //if press enter then add another checklist box
+    textInput.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter') {
+        e.preventDefault();
+        addChecklistItem(index + 1); //another item
+      }
+    });
+
+    //drag and drop for checklist items
+    div.addEventListener('dragstart', () => {
       checklistDragIndex = index;
       div.classList.add('dragging');
     });
@@ -429,9 +456,7 @@ function renderChecklist(task) {
       checklistDragIndex = null;
     });
 
-    div.addEventListener('dragover', (e) => {
-      e.preventDefault();
-    });
+    div.addEventListener('dragover', (e) => e.preventDefault());
 
     div.addEventListener('drop', (e) => {
       e.preventDefault();
@@ -443,7 +468,7 @@ function renderChecklist(task) {
         saveBoards();
       }
     });
-  
+
     container.appendChild(div);
   });
 }
@@ -470,11 +495,21 @@ promptInput.addEventListener("keyup", function(event) {
   }
 })
 
-
-function addChecklistItem() {
+function addChecklistItem(focusIndex = null) {
   if(!selectedTask.checklist) selectedTask.checklist = [];
   selectedTask.checklist.push({ text: '', checked: false });
   renderChecklist(selectedTask.checklist);
+
+  //put cursor inside new checklist item box
+  const container = document.getElementById('checklistItems');
+  const inputs = container.querySelectorAll('.checklistItem input[type="text"]');
+  if(inputs.length > 0) {
+    const targetIndex = focusIndex !== null ? focusIndex : inputs.length - 1;
+    inputs[targetIndex].focus();
+
+    //scroll to bottom just in case it is long
+    container.scrollTop = container.scrollHeight;
+  }
 }
 
 function removeChecklistItem(index) {
